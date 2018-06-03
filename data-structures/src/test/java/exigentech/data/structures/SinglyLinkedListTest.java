@@ -3,8 +3,9 @@ package exigentech.data.structures;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
+import exigentech.data.structures.list.SinglyLinkedList;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +19,11 @@ public final class SinglyLinkedListTest {
 
   @Nested
   public final class Insertion {
+
     private final SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
 
     @Test
-    public void addToEmptyList() {
+    public void insertIntoEmptyList() {
       list.insertAt(0, 1);
       assertThat(list.getLength(), is(1));
       assertThat(list.valueAt(0), is(1));
@@ -29,8 +31,8 @@ public final class SinglyLinkedListTest {
 
     @Test
     public void insertHead() {
-      list.insertAt(0, 1);
-      list.insertAt(0, 2);
+      list.insertHead(1);
+      list.insertHead(2);
 
       assertThat(list.getLength(), is(2));
       assertThat(list.valueAt(0), is(2));
@@ -39,11 +41,47 @@ public final class SinglyLinkedListTest {
 
     @Test
     public void insertTail() {
-      list.insertAt(1, 2);
+      list.insertTail(1);
+      list.insertTail(2);
 
       assertThat(list.getLength(), is(2));
       assertThat(list.valueAt(0), is(1));
       assertThat(list.valueAt(1), is(2));
+    }
+
+    @Test
+    public void insertMiddle() {
+      list.insertHead(1);
+      list.insertTail(3);
+      list.insertAt(1, 2);
+
+      assertThat(list.getLength(), is(3));
+      assertThat(list.valueAt(0), is(1));
+      assertThat(list.valueAt(1), is(2));
+      assertThat(list.valueAt(2), is(3));
+    }
+  }
+
+  @Nested
+  public final class Deletion {
+
+    private final SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
+
+    @Test
+    public void passIndexExceedingListSize() {
+      assertThrows(IndexOutOfBoundsException.class, () -> list.deleteAt(1));
+      assertThrows(IndexOutOfBoundsException.class, () -> list.valueAt(1));
+    }
+
+    @Test
+    public void passNegativeIndex() {
+      assertThrows(IllegalArgumentException.class, () -> list.deleteAt(-1));
+      assertThrows(IllegalArgumentException.class, () -> list.valueAt(-1));
+    }
+
+    @Test
+    public void deleteFromEmptyList() {
+      assertThrows(IndexOutOfBoundsException.class, () -> list.deleteAt(0));
     }
   }
 }

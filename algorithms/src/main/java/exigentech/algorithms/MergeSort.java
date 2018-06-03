@@ -1,45 +1,34 @@
 package exigentech.algorithms;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class MergeSort<T extends Comparable<T>> implements SortingStrategy<T> {
 
   @Override
-  public T[] sort(T[] input) {
-    if (input.length == 1) {
+  public List<T> sortAscending(List<T> input) {
+    if (input.size() == 1) {
       return input;
     }
 
-    final int pivot = input.length / 2;
-    final T[] lhsSorted = sort(Arrays.copyOfRange(input, 0, pivot));
-    final T[] rhsSorted = sort(Arrays.copyOfRange(input, pivot, input.length));
+    final int pivot = input.size() / 2;
+    final List<T> lhsSorted = sortAscending(input.subList(0, pivot));
+    final List<T> rhsSorted = sortAscending(input.subList(pivot, input.size()));
 
-    if (lhsSorted.length == 1 && rhsSorted.length == 1) {
-      final T[] sortedValues = (T[]) new Comparable[2];
+    final T lhsValue = lhsSorted.get(0);
+    final T rhsValue = rhsSorted.get(0);
 
-      final T lhsValue = rhsSorted[0];
-      final T rhsValue = rhsSorted[0];
+    final List<T> mergedSorted = new ArrayList<>(lhsSorted.size() + rhsSorted.size());
 
-      if (lhsValue.compareTo(rhsValue) <= 0) {
-        sortedValues[0] = lhsValue;
-        sortedValues[1] = rhsValue;
-      } else {
-        sortedValues[0] = rhsValue;
-        sortedValues[1] = lhsValue;
-      }
-
-      return sortedValues;
+    if (lhsSorted.size() == 1 || rhsSorted.size() == 1 && lhsValue.compareTo(rhsValue) > 0) {
+      mergedSorted.addAll(rhsSorted);
+      mergedSorted.addAll(lhsSorted);
+    } else {
+      mergedSorted.addAll(lhsSorted);
+      mergedSorted.addAll(rhsSorted);
     }
 
-    return mergeArrays(lhsSorted, rhsSorted);
-  }
-
-  private T[] mergeArrays(final T[] lhs, final T[] rhs) {
-    final T[] merged = Arrays.copyOf(lhs, lhs.length + rhs.length);
-    for (int i = 1; i < rhs.length; i++) {
-      merged[i + lhs.length] = rhs[i];
-    }
-    return merged;
+    return Collections.unmodifiableList(mergedSorted);
   }
 }

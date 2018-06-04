@@ -97,6 +97,10 @@ public final class SubstringDiff {
           currentSubstringLength++;
         }
 
+        if (differingCharacters < k) {
+           currentSubstringLength++;
+        }
+
         if (currentSubstringLength > currentMax) {
           currentMax = currentSubstringLength;
         }

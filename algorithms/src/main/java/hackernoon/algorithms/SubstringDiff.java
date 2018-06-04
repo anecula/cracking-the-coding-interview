@@ -1,11 +1,11 @@
 package hackernoon.algorithms;
 
-public final class SubstringDiff {
+final class SubstringDiff {
 
   private final String lhs;
   private final String rhs;
 
-  public SubstringDiff(String lhs, String rhs) {
+  SubstringDiff(String lhs, String rhs) {
     this.lhs = lhs.trim();
     this.rhs = rhs.trim();
   }
@@ -30,7 +30,7 @@ public final class SubstringDiff {
    * @param k
    * @return
    */
-  public int substringDiff(int k) {
+   int substringDiff(int k) {
     final int maxLength = Integer.max(lhs.trim().length(), rhs.trim().length());
 
     int currentSubstringLength = 0;

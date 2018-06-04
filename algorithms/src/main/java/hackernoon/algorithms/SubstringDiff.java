@@ -67,38 +67,47 @@ public final class SubstringDiff {
   }
 
   public int substringDiff(int k) {
-    if (lhs.equals(rhs)) {
-      return lhs.length();
-    }
-
     final int maxLength = Integer.max(lhs.trim().length(), rhs.trim().length());
-    final Set<Integer> matchingSubstringsLengths = new HashSet<>(maxLength);
 
     int currentSubstringLength = 0;
     int differingCharacters = 0;
+    int currentMax = 0;
 
     for (int lhsStartIndex = 0; lhsStartIndex < maxLength; lhsStartIndex++) {
+
+      if (currentMax > maxLength - lhsStartIndex) {
+        return currentMax;
+      }
+
+      // TODO: this substring is superfluous, if indices can be managed properly.
       final String lhsAnchor = lhs.substring(lhsStartIndex, maxLength);
 
-      for (int rhsStartIndex = 0; rhsStartIndex < maxLength; rhsStartIndex++) {
+      for (int rhsStartIndex = rhs.indexOf(lhsAnchor.charAt(0));
+               rhsStartIndex >= 0;) {
         final String rhsAnchor = rhs.substring(rhsStartIndex, maxLength);
 
         for (int lhsIndex = 0, rhsIndex = 0; lhsIndex < lhsAnchor.length() && rhsIndex < rhsAnchor.length(); lhsIndex++, rhsIndex++) {
           if (lhsAnchor.charAt(lhsIndex) != rhsAnchor.charAt(rhsIndex)) {
             differingCharacters++;
           }
+
           if (differingCharacters > k) {
-            matchingSubstringsLengths.add(currentSubstringLength);
-            currentSubstringLength = 0;
-            differingCharacters = 0;
             break;
           }
           currentSubstringLength++;
         }
+
+        if (currentSubstringLength > currentMax) {
+          currentMax = currentSubstringLength;
+        }
+        currentSubstringLength = 0;
+        differingCharacters = 0;
+
+        rhsStartIndex = rhs.indexOf(lhsAnchor.charAt(0), rhsStartIndex + 1);
       }
     }
 
-    return matchingSubstringsLengths.stream().max(Integer::compareTo).get();
+    return currentMax;
   }
 }
 

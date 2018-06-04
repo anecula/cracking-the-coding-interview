@@ -5,73 +5,120 @@ import java.util.Set;
 
 public final class SubstringDiff {
 
-  private final String s1;
-  private final String s2;
+  private final String lhs;
+  private final String rhs;
 
-  public SubstringDiff(String s1, String s2) {
-    this.s1 = s1;
-    this.s2 = s2;
+  public SubstringDiff(String lhs, String rhs) {
+    this.lhs = lhs.trim();
+    this.rhs = rhs.trim();
   }
 
-  public int substringDiff(int k) {
-    if (s1.equals(s2)) {
-      return s1.length();
+  public int fme(int k, String lhs, String rhs) {
+    final int maxLength = Integer.max(lhs.length(), rhs.length());
+    final Set<Integer> matchingSubstringsLengths = new HashSet<>(maxLength);
+
+    for (int lhsStartIndex = 0; lhsStartIndex < maxLength; lhsStartIndex++) {
+      for (int rhsIndex = 0; rhsIndex < maxLength; rhsIndex++) {
+        matchingSubstringsLengths.add(
+            fme(k, lhs.substring(lhsStartIndex, maxLength), rhs.substring(rhsIndex, maxLength))
+        );
+      }
+    }
+    return matchingSubstringsLengths.stream().max(Integer::compareTo).get();
+  }
+
+  public int substringDiffer(int k) {
+    if (lhs.equals(rhs)) {
+      return lhs.length();
     }
 
-    final int maxLength = Integer.max(s1.length(), s2.length());
-    final Set<Integer> matchingSubstrings = new HashSet<>(maxLength);
+    final int maxLength = Integer.max(lhs.trim().length(), rhs.trim().length());
+    final Set<Integer> matchingSubstringsLengths = new HashSet<>(maxLength);
 
     int currentSubstringLength = 0;
     int differingCharacters = 0;
 
-    for (int substringStart = 0; substringStart < maxLength; substringStart++) {
-      int substringIndex = substringStart;
+    for (int lhsStartIndex = 0; lhsStartIndex < maxLength; lhsStartIndex++) {
+      for (int lhsIndex = 0; lhsIndex < maxLength; lhsIndex++) {
+        final int rhsStartIndex = rhs.indexOf(lhs.charAt(lhsIndex), lhsStartIndex);
 
-      while (substringIndex < maxLength) {
-        if (s1.charAt(substringStart) != s2.charAt(substringStart)) {
-          differingCharacters++;
-        }
-        if (differingCharacters > k) {
-          break;
-        }
-        currentSubstringLength++;
-        substringIndex++;
-      }
+        while (rhsStartIndex > 0) {
+          for (int rhsIndex = rhsStartIndex; rhsIndex < maxLength; rhsIndex++) {
+            if (lhs.charAt(lhsIndex) != rhs.charAt(rhsIndex)) {
+              differingCharacters++;
+            }
 
-      if (currentSubstringLength > 0) {
-        matchingSubstrings.add(currentSubstringLength);
+            if (differingCharacters > k) {
+              matchingSubstringsLengths.add(currentSubstringLength);
+
+              currentSubstringLength = 0;
+              differingCharacters = 0;
+            } else {
+              currentSubstringLength++;
+            }
+          }
+        }
       }
-      currentSubstringLength = 0;
-      differingCharacters = 0;
+//      for (int)
     }
-
-    return matchingSubstrings.stream().max(Integer::compareTo).get();
+//      for (int rhsStartIndex = 0; rhsStartIndex < maxLength;) {
+//        for (int lhsIndex = lhsStartIndex, rhsIndex = rhsStartIndex; lhsIndex < maxLength;) {
+    return 0;
   }
 
+  public int substringDiff(int k) {
+    if (lhs.equals(rhs)) {
+      return lhs.length();
+    }
 
-//  public static void main(String[] args) throws IOException {
-//    try (BufferedWriter bufferedWriter = new BufferedWriter(
-//        new FileWriter(System.getenv("OUTPUT_PATH")));
-//        Scanner scanner = new Scanner(System.in)) {
+    final int maxLength = Integer.max(lhs.trim().length(), rhs.trim().length());
+    final Set<Integer> matchingSubstringsLengths = new HashSet<>(maxLength);
+
+    int currentSubstringLength = 0;
+    int differingCharacters = 0;
+
+    for (int lhsStartIndex = 0; lhsStartIndex < maxLength; lhsStartIndex++) {
+      for (int rhsStartIndex = 0; rhsStartIndex < maxLength;) {
+        for (int lhsIndex = lhsStartIndex, rhsIndex = rhsStartIndex; lhsIndex < maxLength;) {
+          if (lhs.charAt(lhsIndex++) != rhs.charAt(rhsIndex++)) {
+            differingCharacters++;
+          }
+          if (differingCharacters > k) {
+            matchingSubstringsLengths.add(currentSubstringLength);
+            lhsIndex = lhsStartIndex;
+            rhsIndex = ++rhsStartIndex;
+
+            currentSubstringLength = 0;
+            differingCharacters = 0;
+          } else {
+            currentSubstringLength++;
+          }
+//          lhsIndex++;
+//          rhsIndex++;
+        }
+        }
+      }
+//      for (int lhsIndex = lhsStartIndex, rhsIndex = 0; rhsIndex < maxLength;) {
+//        final char lhsChar = lhs.charAt(lhsIndex);
+//        final char rhsChar = rhs.charAt(rhsIndex);
+//        if (lhs.charAt(lhsIndex) != rhs.charAt(rhsIndex)) {
+//          differingCharacters++;
+//        }
+//        if (differingCharacters > k) {
+//          matchingSubstringsLengths.add(currentSubstringLength);
+//          lhsIndex = lhsStartIndex;
 //
-//      int arg = scanner.nextInt();
-//      scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
-//
-//      for (int tItr = 0; tItr < arg; tItr++) {
-//        String[] kS1S2 = scanner.nextLine().split(" ");
-//
-//        int k = Integer.parseInt(kS1S2[0]);
-//
-//        String s1 = kS1S2[1];
-//
-//        String s2 = kS1S2[2];
-//
-//        int result = substringDiff(k, s1, s2);
-//
-//        bufferedWriter.write(String.valueOf(result));
-//        bufferedWriter.newLine();
+//          currentSubstringLength = 0;
+//          differingCharacters = 0;
+//        } else {
+//          lhsIndex++;
+//          currentSubstringLength++;
+//        }
+//        rhsIndex++;
 //      }
 //    }
-//  }
+
+    return matchingSubstringsLengths.stream().max(Integer::compareTo).get();
+  }
 }
 

@@ -9,8 +9,7 @@ public final class SubstringDiffTest {
 
   @Test
   public void firstExample() {
-//    assertThat(new SubstringDiff("abcd", "bbca").substringDiff(1), is(3));
-    assertThat(new SubstringDiff("abcd", "bbca").fme(1, "abcd", "bbca"), is(3));
+    assertThat(new SubstringDiff("abcd", "bbca").substringDiff(1), is(3));
   }
 
   @Test
@@ -21,5 +20,10 @@ public final class SubstringDiffTest {
   @Test
   public void thirdExample() {
     assertThat(new SubstringDiff("abacba", "abcaba").substringDiff(0), is(3));
+  }
+
+  @Test
+  public void fourthExample() {
+    assertThat(new SubstringDiff("helloworld", "yellomarin").substringDiff(3), is(8));
   }
 }

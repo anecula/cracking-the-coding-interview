@@ -78,45 +78,25 @@ public final class SubstringDiff {
     int differingCharacters = 0;
 
     for (int lhsStartIndex = 0; lhsStartIndex < maxLength; lhsStartIndex++) {
-      for (int rhsStartIndex = 0; rhsStartIndex < maxLength;) {
-        for (int lhsIndex = lhsStartIndex, rhsIndex = rhsStartIndex; lhsIndex < maxLength;) {
-          if (lhs.charAt(lhsIndex++) != rhs.charAt(rhsIndex++)) {
+      final String lhsAnchor = lhs.substring(lhsStartIndex, maxLength);
+
+      for (int rhsStartIndex = 0; rhsStartIndex < maxLength; rhsStartIndex++) {
+        final String rhsAnchor = rhs.substring(rhsStartIndex, maxLength);
+
+        for (int lhsIndex = 0, rhsIndex = 0; lhsIndex < lhsAnchor.length() && rhsIndex < rhsAnchor.length(); lhsIndex++, rhsIndex++) {
+          if (lhsAnchor.charAt(lhsIndex) != rhsAnchor.charAt(rhsIndex)) {
             differingCharacters++;
           }
           if (differingCharacters > k) {
             matchingSubstringsLengths.add(currentSubstringLength);
-            lhsIndex = lhsStartIndex;
-            rhsIndex = ++rhsStartIndex;
-
             currentSubstringLength = 0;
             differingCharacters = 0;
-          } else {
-            currentSubstringLength++;
+            break;
           }
-//          lhsIndex++;
-//          rhsIndex++;
-        }
+          currentSubstringLength++;
         }
       }
-//      for (int lhsIndex = lhsStartIndex, rhsIndex = 0; rhsIndex < maxLength;) {
-//        final char lhsChar = lhs.charAt(lhsIndex);
-//        final char rhsChar = rhs.charAt(rhsIndex);
-//        if (lhs.charAt(lhsIndex) != rhs.charAt(rhsIndex)) {
-//          differingCharacters++;
-//        }
-//        if (differingCharacters > k) {
-//          matchingSubstringsLengths.add(currentSubstringLength);
-//          lhsIndex = lhsStartIndex;
-//
-//          currentSubstringLength = 0;
-//          differingCharacters = 0;
-//        } else {
-//          lhsIndex++;
-//          currentSubstringLength++;
-//        }
-//        rhsIndex++;
-//      }
-//    }
+    }
 
     return matchingSubstringsLengths.stream().max(Integer::compareTo).get();
   }

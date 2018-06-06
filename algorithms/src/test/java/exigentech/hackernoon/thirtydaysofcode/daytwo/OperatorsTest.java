@@ -1,9 +1,8 @@
-package exigentech.hackernoon.thirtydaysofcode.dayfour.daytwo;
+package exigentech.hackernoon.thirtydaysofcode.daytwo;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import exigentech.hackernoon.thirtydaysofcode.daytwo.Operators;
 import org.junit.jupiter.api.Test;
 
 class OperatorsTest {

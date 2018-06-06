@@ -1,6 +1,6 @@
-package exigentech.hackernoon.thirtydaysofcode;
+package exigentech.hackernoon.thirtydaysofcode.daytwo;
 
-enum DayTwo_Operators {
+enum Operators {
 
   SOLUTION;
 

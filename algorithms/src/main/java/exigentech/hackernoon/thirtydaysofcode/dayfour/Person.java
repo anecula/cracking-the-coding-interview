@@ -1,5 +1,6 @@
-package hackernoon.thirtydaysofcode.dayfour;
+package exigentech.hackernoon.thirtydaysofcode.dayfour;
 
+@SuppressWarnings("unused") // Suppressed because this class doesn't warrant testing.
 final class Person {
 
   private int age = 0;

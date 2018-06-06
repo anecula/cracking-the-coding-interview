@@ -1,4 +1,4 @@
-package hackernoon.thirtydaysofcode;
+package exigentech.hackernoon.thirtydaysofcode;
 
 enum DayTwo_Operators {
 

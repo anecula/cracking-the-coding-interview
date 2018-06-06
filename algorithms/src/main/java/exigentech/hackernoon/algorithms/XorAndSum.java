@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.stream.IntStream;
+import javafx.util.converter.BigIntegerStringConverter;
 
 interface Solver {
 
@@ -34,23 +35,28 @@ enum XorAndSum implements Solver {
 
   @Override
   public long calculateXorAndSum(String constant, String shifting) {
-    final BitSet constantValue = stringToBitSet(constant);
-    final long[] shiftingValue = stringToBitSet(shifting).toLongArray();
-    System.out.println(BigInteger.valueOf(Arrays.stream(shiftingValue).sum()));
+    final BigIntegerStringConverter converter = new BigIntegerStringConverter();
+    final BigInteger constantValue = converter.fromString(constant);
+    final BigInteger shiftingValue = converter.fromString(shifting);
 
-    long summation = 0;
+    BigInteger summation = BigInteger.ZERO;
 
-    for (int i = 0; i < SUMMATION_MAX; i++) {
-      final BitSet iteration = BitSet.valueOf(
-          BigInteger.valueOf(Arrays.stream(shiftingValue).sum() << i).toByteArray()
-      );
-      System.out.println(iteration.cardinality());
-      iteration.xor(constantValue);
-      System.out.println(iteration.cardinality());
-      summation += Arrays.stream(iteration.toLongArray()).sum();
+    for (int i = 0; i <= SUMMATION_MAX; i++) {
+      summation = summation.add(constantValue.xor(shiftingValue.shiftLeft(i)));
+//      final BitSet iteration = BitSet.valueOf(
+//          BigInteger.valueOf(Arrays.stream(shiftingValue).sum() << i).toByteArray()
+//      );
+//      System.out.println(iteration.cardinality());
+//      iteration.xor(constantValue);
+//      System.out.println(iteration.cardinality());
+//      summation += Arrays.stream(iteration.toLongArray()).sum();
     }
 
-    return summation;
+    return (int) (summation.longValue() - Math.pow(10, 9) + 7);
+  }
+
+  static BigInteger stringToBiggyTwoPac(String input) {
+    return new BigIntegerStringConverter().fromString(input);
   }
 
   static BitSet stringToBitSet(String input) {

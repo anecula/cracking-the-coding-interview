@@ -1,4 +1,4 @@
-package hackernoon.algorithms;
+package exigentech.hackernoon.algorithms;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

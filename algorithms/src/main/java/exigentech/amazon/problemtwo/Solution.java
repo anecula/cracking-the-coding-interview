@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Solution {
+final class Solution {
 
   public List<String> reorderLines(int logFileSize, List<String> logLines) {
     if (logFileSize != logLines.size()) {

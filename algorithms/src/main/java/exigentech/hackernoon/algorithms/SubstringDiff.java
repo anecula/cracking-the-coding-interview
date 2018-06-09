@@ -1,4 +1,4 @@
-package hackernoon.algorithms;
+package exigentech.hackernoon.algorithms;
 
 final class SubstringDiff {
 

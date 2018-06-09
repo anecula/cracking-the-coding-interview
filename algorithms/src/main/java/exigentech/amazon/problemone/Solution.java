@@ -1,8 +1,4 @@
-package exigentech.amazon;
-
-// IMPORT LIBRARY PACKAGES NEEDED BY YOUR PROGRAM
-// SOME CLASSES WITHIN A PACKAGE MAY BE RESTRICTED
-// DEFINE ANY CLASS AND METHOD NEEDED
+package exigentech.amazon.problemone;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// CLASS BEGINS, THIS CLASS IS REQUIRED
-public class Solution {
+final class Solution {
 
-  // METHOD SIGNATURE BEGINS, THIS METHOD IS REQUIRED
   List<String> retrieveMostFrequentlyUsedWords(String literatureText, List<String> wordsToExclude) {
     if (literatureText.isEmpty() || literatureText == null) {
       return Collections.emptyList();
@@ -47,6 +41,5 @@ public class Solution {
         .filter(entry -> entry.getValue() == highestFrequency.get()).map(entry -> entry.getKey())
         .collect(Collectors.toList());
   }
-  // METHOD SIGNATURE ENDS
 }
 

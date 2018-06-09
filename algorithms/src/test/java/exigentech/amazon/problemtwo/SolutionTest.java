@@ -1,14 +1,9 @@
 package exigentech.amazon.problemtwo;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class SolutionTest {
+final class SolutionTest {
 
   @Test
   public void firstExample() {
@@ -21,5 +16,4 @@ class SolutionTest {
         );
     System.out.println(new Solution().reorderLines(4, logFile));
   }
-
 }

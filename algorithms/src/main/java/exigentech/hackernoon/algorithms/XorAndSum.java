@@ -1,4 +1,4 @@
-package hackernoon.algorithms;
+package exigentech.hackernoon.algorithms;
 
 import java.math.BigInteger;
 import java.util.Arrays;

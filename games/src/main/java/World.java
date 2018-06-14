@@ -1,74 +1,15 @@
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class World {
 
   private final List<List<Organism>> board;
-
-  int countAdjacentLivingOrganisms(Organism organism) {
-    final int x = organism.xIndex();
-    final int y = organism.yIndex();
-
-    int adjacentLivingOrganisms = 0;
-
-    for (int i = x - 1; i <= x + 1; i++) {
-      if (i < 0 || i > board.size()) {
-        continue;
-      }
-      for (int k = y - 1; k <= y + 1; k++) {
-        if (k < 0 || k > board.size()) {
-          continue;
-        }
-        if (board.get(i).get(k).isAlive()) {
-          adjacentLivingOrganisms++;
-        }
-      }
-    }
-
-    return adjacentLivingOrganisms;
-  }
-
-  @Override
-  public String toString() {
-    return " ";
-  }
-
-  Map<Organism, Integer> getWorldState() {
-    return board.stream()
-        .flatMap(List::stream)
-        .collect(Collectors.toList()).stream()
-        .collect(Collectors.toMap(Function.identity(), this::countAdjacentLivingOrganisms));
-  }
-
-  public static World create(Collection<Organism> organisms) {
-    assert organisms != null && !organisms.isEmpty() : "organisms == null || organisms.isEmpty()";
-
-    Map<Integer, List<Organism>> organismsByAxis = organisms.stream()
-        .collect(Collectors.groupingBy(Organism::xIndex));
-
-    // ?-
-    return new World(
-        organisms.stream()
-            .collect(Collectors.groupingBy(Organism::xIndex))
-            .keySet().stream().sorted()
-            .map(xAxis -> organismsByAxis.get(xAxis))
-            .collect(Collectors.toList())
-    );
-//
-//    for (int i = 0; i < n; i++) {
-//      board.add(new ArrayList<>(n));
-//      for (int k = 0; k < n; k++) {
-//        board.get(i).add(new Organism(random.nextBoolean(), i, k));
-//      }
-//    }
-//    return new World(board);
-  }
 
   public static World createRandomized(int n) {
     assert n > 0 : "n <= 0";
@@ -76,6 +17,7 @@ public final class World {
     final Random random = new Random(n);
     final List<List<Organism>> board = new ArrayList<>(n);
 
+    // TODO: I think this can be improved using IntStream.range, but may be dubiously better.
     for (int i = 0; i < n; i++) {
       board.add(new ArrayList<>(n));
       for (int k = 0; k < n; k++) {
@@ -85,19 +27,74 @@ public final class World {
     return new World(board);
   }
 
+  public static World create(Collection<Organism> organisms) {
+    assert organisms != null && !organisms.isEmpty() : "organisms == null || organisms.isEmpty()";
+
+    final Map<Integer, List<Organism>> organismsByAxis =
+        organisms.stream()
+            .collect(Collectors.groupingBy(Organism::xIndex));
+
+    return new World(
+        organismsByAxis
+            .keySet().stream().sorted()
+            .map(xAxis -> organismsByAxis.get(xAxis))
+            .collect(Collectors.toList())
+    );
+  }
+
+  public Map<Organism, Integer> getAdjacentLivingOrganisms() {
+    return board.stream()
+        .flatMap(List::stream)
+        .collect(Collectors.toList()).stream()
+        .collect(Collectors.toMap(Function.identity(), this::countAdjacentLivingOrganisms));
+  }
+
+  private int countAdjacentLivingOrganisms(Organism organism) {
+    final int x = organism.xIndex();
+    final int y = organism.yIndex();
+
+    int adjacentLivingOrganisms = 0;
+
+    for (int i = x - 1; i <= x + 1; i++) {
+      if (i < 0 || i >= board.size()) {
+        continue;
+      }
+      for (int k = y - 1; k <= y + 1; k++) {
+        if (k < 0 || k >= board.size()) {
+          continue;
+        }
+        // TODO: this function could be made more functional: given a function, apply it to all
+        // neighbors of each element, and return a Collection contains the results.
+        if (board.get(i).get(k).isAlive()) {
+          adjacentLivingOrganisms++;
+        }
+      }
+    }
+    return adjacentLivingOrganisms;
+  }
+
+  @Override
+  public String toString() {
+    return board.stream().map(List::toString).collect(Collectors.joining(System.lineSeparator()));
+  }
+
   private World(List<List<Organism>> board) {
-    // validate not empty/null
+    // Using vanilla Java Lists, there are many opportunities for null here. A good solution is to
+    // use the ImmutableCollection API from Guava (Google's Utility Library), which has guarantees
+    // against null values.
+    assert board != null && !board.isEmpty() : "organisms == null || organisms.isEmpty()";
     this.board = board;
   }
 }
 
 
-interface WorldIteration {
+@FunctionalInterface
+interface GameOfLife {
 
-  World iterate(int iterationCount);
+  Stream<World> iterate(int iterationCount);
 }
 
-final class ConwaysGame implements WorldIteration {
+final class ConwaysGame implements GameOfLife {
 
   private final World world;
 
@@ -106,18 +103,24 @@ final class ConwaysGame implements WorldIteration {
   }
 
   @Override
-  public World iterate(int iterationCount) {
-    return null; // TODO
+  public Stream<World> iterate(int iterationCount) {
+//    return World.create(
+//        world.getAdjacentLivingOrganisms().entrySet().stream()
+//        .map(entry ->
+//          applyRule(entry.getKey(), entry.getValue())
+//        ).collect(Collectors.toList()));
 
-//    world.getWorldState().forEach();
+    // TODO
+    return null;
   }
 
-  private void applyRule(final Organism organism, final int adjacentLivingOrganisms) {
-    boolean isAlive = organism.isAlive();
-
-    if (adjacentLivingOrganisms < 2) {
+  private Organism applyRule(final Organism organism, final int adjacentLivingOrganisms) {
+    if (organism.isAlive() && adjacentLivingOrganisms < 2 || adjacentLivingOrganisms > 3) {
       organism.kill();
+    } else if (!organism.isAlive() && adjacentLivingOrganisms == 3) {
+      organism.resurrect();
     }
+    return organism;
   }
 }
 
@@ -151,5 +154,10 @@ final class Organism {
 
   void resurrect() {
     this.isAlive = true;
+  }
+
+  @Override
+  public String toString() {
+    return isAlive ? "0" : "1";
   }
 }

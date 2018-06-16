@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class World {
@@ -71,22 +70,19 @@ public final class World {
   }
 
   private int countAdjacentLivingOrganisms(final Organism organism) {
-    final int x = organism.xIndex();
-    final int y = organism.yIndex();
-
     int adjacentLivingOrganisms = 0;
 
-    for (int i = x - 1; i <= x + 1; i++) {
-      if (i < 0 || i >= board.size()) {
+    for (int x = organism.xIndex() - 1; x < organism.xIndex() + 1; x++) {
+      if (x < 0 || x >= board.size()) {
         continue;
       }
-      for (int k = y - 1; k <= y + 1; k++) {
-        if (k < 0 || k >= board.size()) {
+      for (int y = organism.yIndex() - 1; y < organism.yIndex() + 1; y++) {
+        if (y < 0 || y >= board.size()) {
           continue;
         }
         // TODO: this method could be made more functional: given a function, apply it to all, and
         // accumulate the results in a Collection.
-        if (board.get(i).get(k).isAlive()) {
+        if (board.get(x).get(y).isAlive()) {
           adjacentLivingOrganisms++;
         }
       }
@@ -149,7 +145,6 @@ abstract class GameOfLifeDecorator<T extends GameOfLife> implements GameOfLife {
 }
 
 final class ConwaysGame implements GameOfLife {
-
   private final World world;
 
   ConwaysGame(World world) {
@@ -189,6 +184,12 @@ final class Organism {
   private final int xIndex;
   private final int yIndex;
 
+  Organism(int xIndex, int yIndex) {
+    this.isAlive = false;
+    this.xIndex = xIndex;
+    this.yIndex = yIndex;
+  }
+
   Organism(boolean isAlive, int xIndex, int yIndex) {
     this.isAlive = isAlive;
     this.xIndex = xIndex;
@@ -217,6 +218,6 @@ final class Organism {
 
   @Override
   public String toString() {
-    return isAlive ? "0" : "1";
+    return isAlive ? "1" : "0";
   }
 }

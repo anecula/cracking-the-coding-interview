@@ -9,21 +9,13 @@ class WorldTest {
 
   @Test
   void createRandomized() {
-    new ConwaysGame(World.create(10, (i, j) -> new Organism(false, i, j))).iterate(10)
-        .forEach(world -> {
-
-        });
-    new ConwaysGame(World.create(10, new RandomizedOrganismFactory())).iterate(10)
-        .forEach(world -> {
-          System.out.println(world);
-          System.out.println("=======================");
-        });
+    new ConwaysGame(World.create(10, Organism::new)).iterate(10);
   }
 
   @Test
   void resurrectOrganism() {
     final World world = World.create(
-        World.MINIMUM_N, new SelectiveOrganismFactory(Map.of(1, 1))
+        World.MINIMUM_N, createWithLivingOrganisms(Map.of(1, 1))
     );
 
     assertThat(world.getOrganism(1, 1).isAlive(), is(false));
@@ -34,7 +26,7 @@ class WorldTest {
   @Test
   void underPopulation() {
     final World world = World.create(
-        World.MINIMUM_N, new SelectiveOrganismFactory(Map.of(1, 1))
+        World.MINIMUM_N, createWithLivingOrganisms(Map.of(1, 1))
     );
     world.updateOrganism(1, 1, Organism::resurrect);
 
@@ -43,16 +35,39 @@ class WorldTest {
     assertThat(iterations.get(0).getOrganism(1, 1).isAlive(), is(false));
   }
 
-  private static class SelectiveOrganismFactory implements OrganismFactory {
-    private final Map<Integer, Integer> aliveSpaces;
+  @Test
+  void resurrected() {
+    final World world = World.create(World.MINIMUM_N, createWithLivingOrganisms(
+        Map.of(
+            0, 0,
+            1, 0,
+            2, 0
+        )
+    ));
+    System.out.println(world);
+    final List<World> iterations = new ConwaysGame(world).iterate(1);
+    assertThat(iterations.size(), is(1));
+    assertThat(iterations.get(0).getOrganism(1, 1).isAlive(), is(false));
+  }
 
-    public SelectiveOrganismFactory(Map<Integer, Integer> aliveSpaces) {
-      this.aliveSpaces = aliveSpaces;
-    }
+  @Test
+  void overPopulated() {
+    final World world = World.create(World.MINIMUM_N, (x, y) -> new Organism(true, x, y));
+    System.out.println(world);
 
-    @Override
-    public Organism apply(Integer x, Integer y) {
-      return new Organism(false, x, y);
-    }
-  };
+    final List<World> iterations = new ConwaysGame(world).iterate(1);
+    assertThat(iterations.size(), is(1));
+    System.out.println(iterations.get(0));
+    assertThat(iterations.get(0).getOrganism(0, 1).isAlive(), is(true));
+    assertThat(iterations.get(0).getOrganism(1, 1).isAlive(), is(false));
+  }
+
+  private static OrganismFactory createWithLivingOrganisms(Map<Integer, Integer> livingCoords) {
+    return new OrganismFactory() {
+      @Override
+      public Organism apply(Integer x, Integer y) {
+        return new Organism(livingCoords.getOrDefault(x, -1) == y, x, y);
+      }
+    };
+  }
 }

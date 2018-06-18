@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import exigentech.conwaysgame.organism.Organism;
 import java.util.Map;
 
-public class LivingOrganismFactory implements OrganismFactory {
+public final class LivingOrganismFactory implements OrganismFactory {
 
   private final Map<Integer, Integer> livingCoordinates;
 

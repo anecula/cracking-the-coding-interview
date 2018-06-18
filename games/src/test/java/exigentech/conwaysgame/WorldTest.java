@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-class WorldTest {
+// TODO: refactor out into tests for individual classes
+final class WorldTest {
 
   @Test
   void createRandomized() {

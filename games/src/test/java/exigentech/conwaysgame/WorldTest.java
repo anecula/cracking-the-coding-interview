@@ -1,6 +1,10 @@
+package exigentech.conwaysgame;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import exigentech.conwaysgame.organism.Organism;
+import exigentech.conwaysgame.organism.factory.OrganismFactory;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -19,7 +23,7 @@ class WorldTest {
     );
 
     assertThat(world.getOrganism(1, 1).isAlive(), is(false));
-    world.updateOrganism(1, 1, Organism::resurrect);
+    world.modifyOrganism(1, 1, Organism::resurrect);
     assertThat(world.getOrganism(1, 1).isAlive(), is(true));
   }
 
@@ -28,7 +32,7 @@ class WorldTest {
     final World world = World.create(
         World.MINIMUM_N, createWithLivingOrganisms(Map.of(1, 1))
     );
-    world.updateOrganism(1, 1, Organism::resurrect);
+    world.modifyOrganism(1, 1, Organism::resurrect);
 
     final List<World> iterations = new ConwaysGame(world).iterate(1);
     assertThat(iterations.size(), is(1));

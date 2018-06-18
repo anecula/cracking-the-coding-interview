@@ -1,6 +1,6 @@
-package exigentech.conwaysgame.organism.factory;
+package exigentech.gameoflife.organism.factory;
 
-import exigentech.conwaysgame.organism.Organism;
+import exigentech.gameoflife.organism.Organism;
 import java.util.Random;
 
 /**

@@ -1,8 +1,8 @@
-package exigentech.conwaysgame.organism.factory;
+package exigentech.gameoflife.organism.factory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import exigentech.conwaysgame.organism.Organism;
+import exigentech.gameoflife.organism.Organism;
 import java.util.function.BiFunction;
 
 public interface OrganismFactory extends BiFunction<Integer, Integer, Organism> {

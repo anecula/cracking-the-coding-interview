@@ -1,11 +1,15 @@
-package exigentech.conwaysgame;
+package exigentech.gameoflife.conwaysgame;
 
-import exigentech.conwaysgame.organism.Organism;
+import exigentech.gameoflife.GameOfLife;
+import exigentech.gameoflife.World;
+import exigentech.gameoflife.organism.Organism;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+// TODO: The rule is the true abstraction point here. Interfaces can be made more granular, perhaps
+// using inheritance.
 final class ConwaysGame implements GameOfLife {
   private final World world;
 

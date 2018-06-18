@@ -1,6 +1,6 @@
-package exigentech.conwaysgame;
+package exigentech.gameoflife;
 
-import exigentech.conwaysgame.organism.Organism;
+import exigentech.gameoflife.organism.Organism;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

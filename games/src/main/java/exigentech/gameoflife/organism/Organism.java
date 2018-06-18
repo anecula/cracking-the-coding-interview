@@ -1,4 +1,4 @@
-package exigentech.conwaysgame.organism;
+package exigentech.gameoflife.organism;
 
 import java.util.Objects;
 
